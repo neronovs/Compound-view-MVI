@@ -6,9 +6,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.customview.model.CardsModel
 import com.example.customview.R
+import com.example.customview.model.CardsModel
+import com.example.customview.view.ErrorState
+import com.example.customview.view.LoadingState
+import com.example.customview.view.SuccessState
 import com.example.customview.view.ViewStates
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
@@ -17,7 +21,11 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class MainViewModel(app: Application) : AndroidViewModel(app),
+class MainViewModel(
+    app: Application,
+    val disp: CoroutineDispatcher? = null
+) : AndroidViewModel(app),
+
     IViewModel<ViewStates, RefillIntent> {
 
     private var initState: Boolean = true
@@ -36,18 +44,19 @@ class MainViewModel(app: Application) : AndroidViewModel(app),
     private fun handleIntent() = viewModelScope.launch {
         intents.consumeAsFlow().collect { userIntent ->
             when (userIntent) {
-                RefillIntent.RefillFields -> refillData()
+                RefillFields -> refillData()
             }
         }
     }
 
-    private fun refillData() = viewModelScope.launch(Dispatchers.Default) {
-        try {
-            _state.postValue(ViewStates.LoadingState)
 
-            Executors.newSingleThreadScheduledExecutor().schedule({
+    private fun refillData() = viewModelScope.launch(disp ?: Dispatchers.Default) {
+        try {
+            _state.postValue(LoadingState)
+
+            fun stuff() {
                 _state.postValue(
-                    ViewStates.SuccessState(
+                    SuccessState(
                         CardsModel(
                             //Name filling
                             nameText = getString(
@@ -69,10 +78,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app),
                         )
                     )
                 )
-            }, 2, TimeUnit.SECONDS)
+            }
+
+            disp?.let { stuff() } ?: Executors.newSingleThreadScheduledExecutor()
+                .schedule({ stuff() }, 2, TimeUnit.SECONDS)
 
         } catch (e: Exception) {
-            _state.postValue(ViewStates.ErrorState(e))
+            _state.postValue(ErrorState(e))
         }
     }.also { initState = !initState }
 

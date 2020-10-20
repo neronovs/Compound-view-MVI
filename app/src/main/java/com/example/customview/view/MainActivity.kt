@@ -6,11 +6,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.transition.TransitionManager
 import com.example.customview.R
 import com.example.customview.model.CardsModel
 import com.example.customview.viewModel.MainViewModel
-import com.example.customview.viewModel.RefillIntent
+import com.example.customview.viewModel.RefillFields
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 
@@ -27,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonRefillFields?.setOnClickListener {
             lifecycleScope.launch {
-                viewModel.intents.send(RefillIntent.RefillFields)
+                viewModel.intents.send(RefillFields)
             }
         }
     }
@@ -37,8 +36,8 @@ class MainActivity : AppCompatActivity() {
         buttonRefillFields?.isEnabled = !viewState.isLoading()
 
         when (viewState) {
-            is ViewStates.SuccessState -> refillFields(viewState.res)
-            is ViewStates.ErrorState -> AlertDialog.Builder(this)
+            is SuccessState -> refillFields(viewState.res)
+            is ErrorState -> AlertDialog.Builder(this)
                 .setTitle("Error!")
                 .show()
             else -> Unit

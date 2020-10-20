@@ -6,12 +6,12 @@ interface IState
 
 sealed class ViewStates : IState {
 
-    object LoadingState : ViewStates()
-
-    data class SuccessState(val res: CardsModel) : ViewStates()
-
-    data class ErrorState(val err: Throwable) : ViewStates()
-
     fun isLoading() = this is LoadingState
 
 }
+
+object LoadingState : ViewStates()
+
+data class SuccessState(val res: CardsModel) : ViewStates()
+
+data class ErrorState(val err: Throwable) : ViewStates()
