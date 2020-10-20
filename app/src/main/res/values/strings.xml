@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Custom View</string>
+
+    <string name="refill_fields_button">Refill fields</string>
+
+    <string name="init_name_text">Sergei Neronov</string>
+    <string name="init_name_hint">Enter your name</string>
+    <string name="init_address_text">12439, Berlin</string>
+    <string name="init_address_hint">Your Ort</string>
+
+    <string name="refill_name_text">Angela Merkel</string>
+    <string name="refill_name_hint">Kanzler\'s name</string>
+    <string name="refill_address_text">11011, Berlin</string>
+    <string name="refill_address_hint">Bundes Ort</string>
+
+</resources>
