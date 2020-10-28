@@ -21,12 +21,9 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class MainViewModel(
-    app: Application,
-    val disp: CoroutineDispatcher? = null
-) : AndroidViewModel(app),
+class MainViewModel(app: Application) : AndroidViewModel(app), IViewModel<ViewStates, RefillIntent> {
 
-    IViewModel<ViewStates, RefillIntent> {
+    var disp: CoroutineDispatcher? = null
 
     private var initState: Boolean = true
 
@@ -39,6 +36,10 @@ class MainViewModel(
 
     init {
         handleIntent()
+    }
+
+    constructor(app: Application, disp: CoroutineDispatcher? = null) : this(app) {
+        this.disp = disp
     }
 
     private fun handleIntent() = viewModelScope.launch {
@@ -72,7 +73,7 @@ class MainViewModel(
                                 if (initState) R.string.init_address_text else R.string.refill_address_text
                             ),
                             addressHint = getString(
-                                if (initState) R.string.init_address_hint else R.string.refill_address_text
+                                if (initState) R.string.init_address_hint else R.string.refill_address_hint
                             ),
                             addressImage = if (initState) R.mipmap.ic_address else R.mipmap.ic_bundestag
                         )

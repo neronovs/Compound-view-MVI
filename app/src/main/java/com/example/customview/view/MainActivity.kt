@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.customview.R
 import com.example.customview.model.CardsModel
@@ -13,16 +14,16 @@ import com.example.customview.viewModel.RefillFields
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 
+
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        subscribeLiveData()
 
         setContentView(R.layout.activity_main)
-
-        subscribeLiveData()
 
         buttonRefillFields?.setOnClickListener {
             lifecycleScope.launch {
